@@ -9,7 +9,7 @@ APPS_DIR = ROOT_DIR.path('zanhu')
 
 env = environ.Env()
 
-READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=False)
+READ_DOT_ENV_FILE = env.bool('DJANGO_READ_DOT_ENV_FILE', default=True)
 if READ_DOT_ENV_FILE:
     # OS environment variables take precedence over variables from .env
     env.read_env(str(ROOT_DIR.path('.env')))
@@ -24,7 +24,7 @@ DEBUG = env.bool('DJANGO_DEBUG', False)
 # In Windows, this must be set to your system time zone.
 TIME_ZONE = 'Asia/Shanghai'
 # https://docs.djangoproject.com/en/dev/ref/settings/#language-code
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'zh-Hans'
 # https://docs.djangoproject.com/en/dev/ref/settings/#site-id
 SITE_ID = 1
 # https://docs.djangoproject.com/en/dev/ref/settings/#use-i18n
@@ -41,7 +41,7 @@ USE_TZ = True
 DATABASES = {
     'default': env.db('DATABASE_URL', default='postgres:///zanhu'),
 }
-DATABASES['default']['ATOMIC_REQUESTS'] = True
+DATABASES['default']['ATOMIC_REQUESTS'] = True #降HTTP请求对数据库操作封装成事务
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -59,8 +59,7 @@ DJANGO_APPS = [
     'django.contrib.sites',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # 'django.contrib.humanize', # Handy template tags
-    'django.contrib.admin',
+    'django.contrib.humanize', # Handy template tags
 ]
 THIRD_PARTY_APPS = [
     'crispy_forms',
@@ -209,7 +208,7 @@ FIXTURE_DIRS = (
 # https://docs.djangoproject.com/en/dev/ref/settings/#session-cookie-httponly
 SESSION_COOKIE_HTTPONLY = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#csrf-cookie-httponly
-CSRF_COOKIE_HTTPONLY = True
+CSRF_COOKIE_HTTPONLY = False
 # https://docs.djangoproject.com/en/dev/ref/settings/#secure-browser-xss-filter
 SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
@@ -219,17 +218,13 @@ X_FRAME_OPTIONS = 'DENY'
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env('DJANGO_EMAIL_BACKEND', default='django.core.mail.backends.smtp.EmailBackend')
+EMAIL_HOST = env('DJANGO_EMAIL_HOST')
+EMAIL_USE_SSL = env('DJANGO_EMAIL_USE_SSL',default=True)
+EMAIL_PORT = env('DJANGO_EMAIL_PORT',default=465)
+EMAIL_HOST_USER = env('DJANGO_EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env('DJANGO_EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = env('DJANGO_DEFAULT_FROM_EMAIL')
 
-# ADMIN
-# ------------------------------------------------------------------------------
-# Django Admin URL.
-ADMIN_URL = 'admin/'
-# https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [
-    ("""__Erick__""", '__erick__@example.com'),
-]
-# https://docs.djangoproject.com/en/dev/ref/settings/#managers
-MANAGERS = ADMINS
 
 # Celery
 # ------------------------------------------------------------------------------
@@ -240,19 +235,19 @@ if USE_TZ:
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-broker_url
 CELERY_BROKER_URL = env('CELERY_BROKER_URL')
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_backend
-CELERY_RESULT_BACKEND = CELERY_BROKER_URL
+CELERY_RESULT_BACKEND = env('CELERY_RESULT_BACKEND')
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-accept_content
-CELERY_ACCEPT_CONTENT = ['json']
+CELERY_ACCEPT_CONTENT = ['json','msgpack']
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-task_serializer
-CELERY_TASK_SERIALIZER = 'json'
+CELERY_TASK_SERIALIZER = 'msgpack' #任务序列化与反序列化使用msgpack是一个二进制的json序列化方案，比json小，性能高
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#std:setting-result_serializer
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json' # 读取任务结果一般要求性能不高，所用了性能更好的json
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-time-limit
 # TODO: set to whatever value is adequate in your circumstances
-CELERYD_TASK_TIME_LIMIT = 5 * 60
+CELERYD_TASK_TIME_LIMIT = 5 * 60 #单个任务的最大运行时间
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
-CELERYD_TASK_SOFT_TIME_LIMIT = 60
+CELERYD_TASK_SOFT_TIME_LIMIT = 60 #任务的软时间限制，超出时间会跑出软时间异常
 # django-allauth
 # ------------------------------------------------------------------------------
 ACCOUNT_ALLOW_REGISTRATION = env.bool('DJANGO_ACCOUNT_ALLOW_REGISTRATION', True)
