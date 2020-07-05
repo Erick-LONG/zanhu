@@ -37,6 +37,7 @@ Pillow = "==5.4.1"
 Django = "==2.1.7"
 Werkzeug = "==0.14.1"
 Sphinx = "==1.8.4"
+sorl-thumbnail = "*"
 
 [requires]
 python_version = "3.6"
