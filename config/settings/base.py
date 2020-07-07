@@ -41,6 +41,12 @@ USE_TZ = True
 DATABASES = {
     'default': env.db('DATABASE_URL', default='postgres:///zanhu'),
 }
+
+DATABASES['default'].update({'TEST': {
+                'CHARSET': 'utf8',
+                'COLLATION': 'utf8_general_ci',
+            }})
+
 DATABASES['default']['ATOMIC_REQUESTS'] = True #降HTTP请求对数据库操作封装成事务
 
 # URLS
