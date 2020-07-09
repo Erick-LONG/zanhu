@@ -3,7 +3,13 @@ from django.shortcuts import render
 # Create your views here.
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView
+from django.template.loader import render_to_string
+from django.http import HttpResponse,HttpResponseBadRequest
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_http_methods
 from zanhu.news.models import News
+from zanhu.helpers import ajax_requred
+
 
 class NewsListView(LoginRequiredMixin,ListView):
     '''首页动态'''
@@ -30,3 +36,16 @@ class NewsListView(LoginRequiredMixin,ListView):
     #     return context
 
 
+@login_required
+@ajax_requred
+@require_http_methods(['POST'])
+def post_new(request):
+    '''发送动态,AJAX POST请求'''
+
+    post = request.POST['post'].strip()
+    if post:
+        posted = News.objects.create(user=request.user,content=post)
+        html = render_to_string('news/news_single.html',{'news':posted,'request':request})
+        return HttpResponse(html)
+    else:
+        return HttpResponseBadRequest('内容不能为空')
