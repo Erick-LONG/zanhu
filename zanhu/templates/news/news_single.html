@@ -13,8 +13,7 @@
         <div class="post">
             <!--自己发送的动态显示删除按钮-->
             {% if request.user.username == news.user.username %}
-                <a href="#">
-{#                <a href="{% url 'news:delete_news' news.pk %}">#}
+                <a href="{% url 'news:delete_news' news.pk %}">
                     <i class="fa fa-times pull-right" aria-hidden="true" title="点击删除这条动态"></i>
                 </a>
             {% endif %}

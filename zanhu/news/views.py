@@ -2,13 +2,15 @@ from django.shortcuts import render
 
 # Create your views here.
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView
+from django.views.generic import ListView,DeleteView
 from django.template.loader import render_to_string
 from django.http import HttpResponse,HttpResponseBadRequest
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.http import require_http_methods
+from django.urls import reverse_lazy
+
 from zanhu.news.models import News
-from zanhu.helpers import ajax_requred
+from zanhu.helpers import ajax_requred,AuthorRequireMixin
 
 
 class NewsListView(LoginRequiredMixin,ListView):
@@ -34,6 +36,14 @@ class NewsListView(LoginRequiredMixin,ListView):
     #     context = super().get_context_data()
     #     context['views'] = 100
     #     return context
+
+
+class NewDeleteView(LoginRequiredMixin,AuthorRequireMixin,DeleteView):
+    model = News
+    template_name = 'news/news_confirm_delete.html'
+    #slug_url_kwarg = 'slug' #通过url传入要删除的对象主键ID，默认值是slug
+    #pk_url_kwarg = 'pk' #通过url传入要删除的对象主键ID，默认值是pk
+    success_url = reverse_lazy('news:list') #在项目URLconf未加载前使用
 
 
 @login_required
