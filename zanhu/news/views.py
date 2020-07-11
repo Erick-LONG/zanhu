@@ -71,3 +71,33 @@ def like(request):
     # 取消或者添加赞
     news.switch_like(request.user)
     return JsonResponse({'likes': news.count_likers()})
+
+@login_required
+@ajax_requred
+@require_http_methods(['GET'])
+def get_thread(request):
+    '''返回动态评论，ajax get请求'''
+    new_id = request.GET['news']
+    news = News.objects.get(pk=new_id)
+    news_html = render_to_string('news/news_single.html',{'news':news}) #没有评论时
+    thread_html = render_to_string('news/news_thread.html',{'thread':news.get_thread()})
+    return JsonResponse({
+        'uuid':new_id,
+        'news':news_html,
+        'thread':thread_html
+    })
+
+
+@login_required
+@ajax_requred
+@require_http_methods(['POST'])
+def post_comment(request):
+    '''评论，ajax POST请求'''
+    post = request.POST['reply'].strip()
+    parent_id= request.POST['parent']
+    parent = News.objects.get(pk=parent_id)
+    if post:
+        parent.reply_this(request.user,post)
+        return JsonResponse({'comments':parent.comment_count()})
+    else:
+        return HttpResponseBadRequest('内容不能为空')
