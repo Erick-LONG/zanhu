@@ -74,10 +74,12 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'sorl.thumbnail',
+    'taggit'
 ]
 LOCAL_APPS = [
     'users.apps.UsersConfig',
     'news.apps.NewsConfig',
+    'articles.apps.ArticlesConfig'
     # Your stuff: custom apps go here
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
