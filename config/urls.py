@@ -11,7 +11,8 @@ urlpatterns = [
     path('',NewsListView.as_view(),name='home'),
     path('users/',include('users.urls',namespace='users')),
     path("accounts/", include("allauth.urls")),
-    path('news/',include('news.urls',namespace='news'))
+    path('news/',include('news.urls',namespace='news')),
+    path('articles/',include('articles.urls',namespace='articles'))
     # Your stuff: custom urls includes go here
 ] + static(
     settings.MEDIA_URL, document_root=settings.MEDIA_ROOT

@@ -10,6 +10,28 @@ from django.db import models
 
 
 @python_2_unicode_compatible
+class ArticleQuerySet(models.query.QuerySet):
+    '''自定义queryset,提高模型类的可用性'''
+    def get_published(self):
+        return self.filter(status='P')
+
+    def get_drafts(self):
+        return self.filter(status='D')
+
+    def get_counted_tags(self):
+        '''统计所有已发表的文章中，每一个标签的数量- 大于0'''
+        tag_dict = {}
+        query = self.get_published().annotate(tagged=models.Count('tags')).filter(tags__gt=0)
+        for obj in query:
+            for tag in obj.tags.names():
+                if tag not in tag_dict:
+                    tag_dict[tag] = 1
+                else:
+                    tag_dict[tag] += 1
+        return tag_dict.items()
+
+
+@python_2_unicode_compatible
 class Article(models.Model):
     STATUS = (
         ('D','Draft'),
@@ -26,6 +48,7 @@ class Article(models.Model):
     tags = TaggableManager(help_text='多个标签使用英文逗号隔开',verbose_name='标签')
     created_at = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
     updated_at = models.DateTimeField(auto_now=True,verbose_name='更新时间')
+    objects = ArticleQuerySet.as_manager()
 
     class Meta:
         verbose_name = '文章'

@@ -39,6 +39,7 @@ Werkzeug = "==0.14.1"
 Sphinx = "==1.8.4"
 sorl-thumbnail = "*"
 django-test-plus = "*"
+django-taggit = "*"
 
 [requires]
 python_version = "3.6"
