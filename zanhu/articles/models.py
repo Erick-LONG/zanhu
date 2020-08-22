@@ -3,6 +3,9 @@ from __future__ import unicode_literals
 
 from slugify import slugify
 from taggit.managers import TaggableManager
+from markdownx.models import MarkdownxField
+from markdownx.utils import markdownify
+
 from django.utils.encoding import python_2_unicode_compatible
 from django.conf import settings
 
@@ -43,7 +46,7 @@ class Article(models.Model):
     image = models.ImageField(upload_to='articles_pictures/%Y/%m/%d',verbose_name='文章图片')
     slug = models.SlugField(max_length=255,verbose_name='URL别名')
     status = models.CharField(max_length=1,choices=STATUS,default='D',verbose_name='状态')
-    content = models.TextField(verbose_name='内容')
+    content = MarkdownxField(verbose_name='内容')
     edited = models.BooleanField(default=False,verbose_name='是否可编辑')
     tags = TaggableManager(help_text='多个标签使用英文逗号隔开',verbose_name='标签')
     created_at = models.DateTimeField(auto_now_add=True,verbose_name='创建时间')
@@ -62,3 +65,7 @@ class Article(models.Model):
              update_fields=None):
         self.slug = slugify(self.title)
         super(Article,self).save()
+
+    def get_markdown(self):
+        '''将Markdown文本转换成HTML'''
+        return markdownify(self.content)

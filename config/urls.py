@@ -9,8 +9,15 @@ from zanhu.news.views import NewsListView
 urlpatterns = [
     # User management
     path('',NewsListView.as_view(),name='home'),
+
+    #用户管理
     path('users/',include('users.urls',namespace='users')),
     path("accounts/", include("allauth.urls")),
+
+    #第三方应用
+    path('markdownx/',include('markdownx.urls')),
+
+    #开发的应用
     path('news/',include('news.urls',namespace='news')),
     path('articles/',include('articles.urls',namespace='articles'))
     # Your stuff: custom urls includes go here

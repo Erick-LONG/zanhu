@@ -42,3 +42,8 @@ class ArticlesCreateView(LoginRequiredMixin,CreateView):
         '''创建成功后跳转'''
         messages.success(self.request,self.message) #消息传递给下一次请求
         return reverse_lazy('articles:list')
+
+class ArticlesDetailView(LoginRequiredMixin,DetailView):
+    '''文章详情'''
+    model = Article
+    template_name = 'articles/article_detail.html'

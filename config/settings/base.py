@@ -66,6 +66,7 @@ DJANGO_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.humanize', # Handy template tags
+    'django.forms' #用于重写后面的Django内置的widget模板
 ]
 THIRD_PARTY_APPS = [
     'crispy_forms',
@@ -74,7 +75,8 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount',
     'allauth.socialaccount.providers.github',
     'sorl.thumbnail',
-    'taggit'
+    'taggit',
+    'markdownx'
 ]
 LOCAL_APPS = [
     'users.apps.UsersConfig',
@@ -85,6 +87,8 @@ LOCAL_APPS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#installed-apps
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 
+#更改查找组件模板的顺序，先自定义的模板，然后系统默认模板
+FROM_RENDERER = 'django.forms.renderers.TemplatesSetting'
 # MIGRATIONS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#migration-modules
@@ -279,3 +283,4 @@ INSTALLED_APPS += ['compressor']
 STATICFILES_FINDERS += ['compressor.finders.CompressorFinder']
 # Your stuff...
 # ------------------------------------------------------------------------------
+MARKDOWNX_SERVER_CALL_LATENCY=2000

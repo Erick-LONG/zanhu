@@ -6,4 +6,5 @@ urlpatterns = [
     path("", views.ArticlesListView.as_view(), name="list"),
     path("write-new-article/", views.ArticlesCreateView.as_view(), name="write_new"),
     path("drafts/", views.DraftListView.as_view(), name="drafts"),
+    path("<str:slug>/", views.ArticlesDetailView.as_view(), name="article"),
 ]
