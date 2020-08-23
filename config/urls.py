@@ -15,6 +15,7 @@ urlpatterns = [
     path("accounts/", include("allauth.urls")),
 
     #第三方应用
+    path('comments/',include('django_comments.urls')),
     path('markdownx/',include('markdownx.urls')),
 
     #开发的应用

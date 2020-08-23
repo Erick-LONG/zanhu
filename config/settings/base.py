@@ -76,7 +76,8 @@ THIRD_PARTY_APPS = [
     'allauth.socialaccount.providers.github',
     'sorl.thumbnail',
     'taggit',
-    'markdownx'
+    'markdownx',
+    'django_comments'
 ]
 LOCAL_APPS = [
     'users.apps.UsersConfig',
